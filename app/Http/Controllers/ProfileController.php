@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User; // Assuming you're using the User model
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -100,7 +101,7 @@ class ProfileController extends Controller
             'message' => 'Password updated successfully'
         ]);
     }
-  /*  public function updateAvatar(Request $request)
+   public function updatephoto(Request $request)
 {
     $validator = Validator::make($request->all(), [
         'profile_photo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
@@ -135,7 +136,25 @@ class ProfileController extends Controller
         'profile_photo_url' => asset("storage/{$path}"),
         'message' => 'Profile photo updated successfully'
     ]);
-}*/
+}
+
+
+public function destroy()
+{
+    $user = Auth::user();
+    
+    // Delete profile photo if exists
+    if ($user->profile && $user->profile->profile_photo) {
+        Storage::disk('public')->delete($user->profile->profile_photo);
+    }
+    
+    // Delete user (which cascades to profile via Model boot())
+    $user->delete();
+    
+    return response()->json([
+        'message' => 'Account and all associated data deleted successfully'
+    ]);
+}
 }
 
     /**

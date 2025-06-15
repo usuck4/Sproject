@@ -15,7 +15,15 @@ class User extends Authenticatable {
 
     public function profile() { return $this->hasOne(Profile::class); }
     public function reservations() { return $this->hasMany(Reservation::class); }
-    public function clubOwner() { return $this->hasOne(ClubOwner::class)
-        
-        ;}
+    public function clubOwner() { return $this->hasOne(ClubOwner::class);}
+    protected static function boot()
+{
+    parent::boot();
+    
+    static::deleting(function($user) {
+        $user->profile()->delete();
+        // Optional: Delete other related data (tokens, posts, etc.)
+        $user->tokens()->delete();
+    });
+}
 }

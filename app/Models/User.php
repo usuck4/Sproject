@@ -16,5 +16,6 @@ class User extends Authenticatable {
     public function profile() { return $this->hasOne(Profile::class); }
     public function reservations() { return $this->hasMany(Reservation::class); }
     public function clubOwner() { return $this->hasOne(ClubOwner::class)
+        
         ;}
 }

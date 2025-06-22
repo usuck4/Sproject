@@ -101,7 +101,7 @@ class ProfileController extends Controller
             'message' => 'Password updated successfully'
         ]);
     }
-   public function updatephoto(Request $request)
+    public function updateAvatar(Request $request)
 {
     $validator = Validator::make($request->all(), [
         'profile_photo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
@@ -137,8 +137,6 @@ class ProfileController extends Controller
         'message' => 'Profile photo updated successfully'
     ]);
 }
-
-
 public function destroy()
 {
     $user = Auth::user();

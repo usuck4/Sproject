@@ -9,6 +9,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model {
-    protected $fillable = ['name'];
+    protected $fillable = ['name','category_background'];
     public function clubs() { return $this->hasMany(Club::class);}
 }

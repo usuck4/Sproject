@@ -15,6 +15,7 @@ Schema::create('clubs', function (Blueprint $table) {
     $table->id();
     $table->string('name');
     $table->string('address');
+    $table->string('club_photo')->nullable();
     $table->foreignId('category_id')->constrained()->onDelete('cascade');
     $table->timestamps();
 });

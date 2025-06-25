@@ -10,7 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 
 
 class ClubOwner extends Model {
-    protected $fillable = ['user_id', 'club_id'];
+    protected $fillable = ['user_id', 'club_id','status','permissions'];
+     protected $casts = [
+        'permissions' => 'array'
+    ];
     public function user() { return $this->belongsTo(User::class); }
     public function club() { return $this->belongsTo(Club::class);}
 }

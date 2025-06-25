@@ -30,6 +30,8 @@ class ProfileController extends Controller
             ],
             'message' => 'Profile retrieved successfully'
         ]);
+//-------------------------------------------------------------------------
+           return view('profile.show', ['user' => Auth::user()]);
     }
 
     /**
@@ -64,6 +66,20 @@ class ProfileController extends Controller
             'user' => $user,
             'message' => 'Profile updated successfully'
         ]);
+
+//-------------------------------------------------------
+
+         $user = Auth::user();
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'phone' => 'required|unique:users,phone,'.$user->id,
+        ]);
+
+        $user->update($validated);
+        
+        return redirect()->route('profile.show')->with('success', 'Profile updated successfully!');
     }
 
     /**
@@ -100,7 +116,30 @@ class ProfileController extends Controller
             'new password'=>$user->password,
             'message' => 'Password updated successfully'
         ]);
+
+
+        //------------------------------------------------------
+        $user = Auth::user();
+        
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect']);
+        }
+
+        $user->update([
+            'password' => bcrypt($request->password)
+        ]);
+
+        return redirect()->route('profile.show')->with('success', 'Password updated successfully!');
     }
+
+
+
+
     public function updateAvatar(Request $request)
 {
     $validator = Validator::make($request->all(), [
@@ -132,10 +171,24 @@ class ProfileController extends Controller
     // Update the profile_photo in the Profile model
     $user->profile()->update(['profile_photo' => $path]);
 
-    return response()->json([
+   return response()->json([
         'profile_photo_url' => asset("storage/{$path}"),
         'message' => 'Profile photo updated successfully'
     ]);
+    //------------------------------------------------
+
+
+      $request->validate([
+            'avatar' => 'required|image|max:2048',
+        ]);
+
+        $path = $request->file('avatar')->store('avatars', 'public');
+        
+        Auth::user()->profile()->update([
+            'profile_photo' => $path
+        ]);
+
+        return back()->with('success', 'Profile photo updated!');
 }
 public function destroy()
 {
@@ -152,10 +205,44 @@ public function destroy()
     return response()->json([
         'message' => 'Account and all associated data deleted successfully'
     ]);
+
+
+
+
+
+    //------------
+
+    $user = Auth::user();
+        
+        Auth::logout();
+        $user->delete();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('success', 'Your account has been deleted!');
 }
-}
+
 
     /**
      * Upload/update profile picture.
      */
     
+
+
+
+    // Show user profile
+    
+
+  
+
+    // Update password
+   
+
+    // Update profile photo
+  
+
+    // Delete profile
+
+    }
+

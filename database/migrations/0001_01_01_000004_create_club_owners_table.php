@@ -15,7 +15,10 @@ return new class extends Migration
     $table->id();
     $table->foreignId('user_id')->constrained()->onDelete('cascade');
     $table->foreignId('club_id')->constrained()->onDelete('cascade');
+    $table->string('status')->default('active');
+    $table->json('permissions')->nullable();
     $table->timestamps();
+    $table->unique(['user_id', 'club_id']);
 });
 
 

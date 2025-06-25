@@ -18,6 +18,7 @@ return new class extends Migration
     $table->string('password');
     $table->string('phone_verification_code')->default(000000);
     $table->string('phone_verified_at')->default('d');
+    $table->rememberToken();
     $table->timestamps();
 });
 

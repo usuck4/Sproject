@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -32,6 +33,27 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token,
         ], 201);
+
+
+        //----------------------------------------------------------------
+
+          $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'phone' => 'required|unique:users',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'password' => bcrypt($validated['password']),
+        ]);
+
+        Auth::login($user);
+
+        return redirect('/dashboard-demo');
     }
 
    
@@ -47,9 +69,25 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
+       return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
+        ]);
+
+        //----------------------------------------------------------------
+
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/login');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
         ]);
     }
 
@@ -62,7 +100,41 @@ class AuthController extends Controller
             'message' => 'Successfully logged out'
         ]);
         
+        //----------------------------------------------------------------
+
+        {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
+    }
     
 }
+
+
+
+
+    // Show login form
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    // Handle login
+   
+
+    // Show registration form
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
+    }
+
+    // Handle registration
+   
+    // Handle logout
+    
     
 }
+
+
+    

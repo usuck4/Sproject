@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 
 class Club extends Model {
-    protected $fillable = ['name', 'address', 'category_id'];
+    protected $fillable = ['name', 'address', 'category_id','club_photo'];
     public function category() { return $this->belongsTo(Category::class); }
     public function pitches() { return $this->hasMany(Pitch::class); }
     public function owner() { return $this->hasOne(ClubOwner::class);}

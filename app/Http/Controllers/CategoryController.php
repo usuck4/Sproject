@@ -18,6 +18,11 @@ class CategoryController extends Controller
         return response()->json([
             $categories,
         ]);
+
+//------------------------------------------
+       return view('categories.index', [
+            'categories' => Category::all()
+        ]);
     }
 
     /**
@@ -45,6 +50,18 @@ class CategoryController extends Controller
             'data' => $category,
             'category_backgroun' => asset("storage/{$path}"),
         ], Response::HTTP_CREATED); // 201 status
+
+
+
+        //------------------------------
+         $validated = $request->validate([
+            'name' => 'required|unique:categories|max:255',
+            'category_background' => 'required|string',
+        ]);
+
+        Category::create($validated);
+        
+        return redirect()->route('categories.index')->with('success', 'Category created!');
     }
 
     /**
@@ -55,6 +72,9 @@ class CategoryController extends Controller
         return response()->json([
             'data' => $category->load('clubs') // Load relationship
         ]);
+
+        return view('categories.show', compact('category'));
+   
     }
 
     /**
@@ -72,6 +92,16 @@ class CategoryController extends Controller
             'message' => 'Category updated successfully',
             'data' => $category
         ]);
+
+        //----------------------------
+         $validated = $request->validate([
+            'name' => 'required|max:255|unique:categories,name,'.$category->id,
+            'category_background' => 'required|string',
+        ]);
+
+        $category->update($validated);
+        
+        return redirect()->route('categories.index')->with('success', 'Category updated!');
     }
 
     /**
@@ -90,5 +120,23 @@ class CategoryController extends Controller
         return response()->json([
             'message' => 'Category deleted successfully'
         ], Response::HTTP_NO_CONTENT); // 204 status
+
+        $category->delete();
+        return redirect()->route('categories.index')->with('success', 'Category deleted!');
     }
+
+
+
+    // List all categories
+   
+
+    // Store new category
+ 
+
+   
+
+    // Update category
+ 
+    // Delete category
+    
 }

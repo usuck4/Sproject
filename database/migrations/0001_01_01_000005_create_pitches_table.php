@@ -17,6 +17,8 @@ Schema::create('pitches', function (Blueprint $table) {
     $table->string('name');
     $table->text('description')->nullable();
     $table->string('image_url')->nullable();
+    $table->decimal('price_per_hour', 8, 2)->nullable();
+    $table->string('status')->default('available'); // available, maintenance, unavailable
     $table->timestamps();
 });
 

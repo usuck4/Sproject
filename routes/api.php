@@ -7,6 +7,7 @@ use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubOwnerController;
+use App\Http\Controllers\PitchController;
 
 Route::post('/register', [AuthController::class,'register']);
 Route::post('/login',    [AuthController::class, 'login']);
@@ -65,4 +66,19 @@ Route::prefix('club-owners')->group(function () {
     Route::delete('/{id}', [ClubOwnerController::class, 'destroy']);
     Route::get('/club/{clubId}', [ClubOwnerController::class, 'getClubOwners']);
     Route::get('/user/{userId}', [ClubOwnerController::class, 'getUserOwnedClubs']);
+});
+
+
+
+//pitch api's
+
+Route::prefix('pitches')->group(function () {
+    Route::get('/', [PitchController::class, 'index']);
+    Route::post('/', [PitchController::class, 'store']);
+    Route::get('/{id}', [PitchController::class, 'show']);
+    Route::put('/{id}', [PitchController::class, 'update']);
+    Route::delete('/{id}', [PitchController::class, 'destroy']);
+    
+    // Additional routes
+    Route::get('/club/{clubId}', [PitchController::class, 'getClubPitches']);
 });

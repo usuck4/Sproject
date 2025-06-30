@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 
 class Pitch extends Model {
-    protected $fillable = ['club_id', 'name', 'description', 'image_url'];
+    protected $fillable = ['club_id', 'name', 'description', 'image_url','price_per_hour'];
     public function club() { return $this->belongsTo(Club::class); }
     public function reservations() { return $this->hasMany(Reservation::class);}
 }
